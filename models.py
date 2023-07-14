@@ -6,7 +6,7 @@ Base = declarative_base()
 
 
 class Publisher(Base):
-    __tablename__ = 'publishers'
+    __tablename__ = 'publisher'
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
@@ -14,28 +14,37 @@ class Publisher(Base):
 
 
 class Book(Base):
-    __tablename__ = 'books'
+    __tablename__ = 'book'
 
     id = Column(Integer, primary_key=True)
     title = Column(String)
-    author = Column(String)
-    publisher_id = Column(Integer, ForeignKey('publishers.id'))
-    sales = relationship('Sale', backref='book')
+    publisher_id = Column(Integer, ForeignKey('publisher.id'))
+    stocks = relationship('Stock', backref='book')
 
 
-class Shop(Base):
-    __tablename__ = 'shops'
+class Stock(Base):
+    __tablename__ = 'stock'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
-    sales = relationship('Sale', backref='shop')
+    book_id = Column(Integer, ForeignKey('book.id'))
+    shop_id = Column(Integer, ForeignKey('shop.id'))
+    count = Column(Integer)
+    sales = relationship('Sale', backref='stock')
 
 
 class Sale(Base):
-    __tablename__ = 'sales'
+    __tablename__ = 'sale'
 
     id = Column(Integer, primary_key=True)
-    book_id = Column(Integer, ForeignKey('books.id'))
-    shop_id = Column(Integer, ForeignKey('shops.id'))
     price = Column(Integer)
-    date = Column(Date)
+    date_sale = Column(Date)
+    stock_id = Column(Integer, ForeignKey('stock.id'))
+    count = Column(Integer)
+
+
+class Shop(Base):
+    __tablename__ = 'shop'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    stocks = relationship('Stock', backref='shop')
